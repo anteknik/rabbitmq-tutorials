@@ -1,8 +1,6 @@
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.DeliverCallback;
-import java.nio.charset.StandardCharsets;
+import org.apache.commons.lang3.SerializationUtils;
+import com.rabbitmq.client.*;
+import java.io.IOException;
 
 public class Recv {
 
@@ -17,10 +15,28 @@ public class Recv {
         channel.queueDeclare(QUEUE_NAME, false, false, false, null);
         System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
 
-        DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-            String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
-            System.out.println(" [x] Received '" + message + "'");
-        };
-        channel.basicConsume(QUEUE_NAME, true, deliverCallback, consumerTag -> { });
+        //DeliverCallback deliverCallback = (consumerTag, delivery) -> {
+            //String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
+		
+        //    System.out.println(" [x] Received '" + message + "'");
+        //};
+        //channel.basicConsume(QUEUE_NAME, true, deliverCallback, consumerTag -> { });
+	
+	Consumer consumer = new DefaultConsumer(channel) {
+
+        @Override
+        public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
+                throws IOException {
+
+            String message = new String(body, "UTF-8");
+            //byte [] data = new byte[];
+
+            Object object =    SerializationUtils.deserialize(body);
+
+            System.out.println(" [x] Received '" + object + "'");
+         }
+      };
+    channel.basicConsume(QUEUE_NAME, true, consumer);
+     
     }
 }
