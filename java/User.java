@@ -1,7 +1,7 @@
 import java.io.Serializable;
 
-public class User implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class User {
+
 
 	private long id;
 	private String nama;
