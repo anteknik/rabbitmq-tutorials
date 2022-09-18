@@ -25,8 +25,14 @@ public class Send {
 	        //byte[] dataObject = SerializationUtils.serialize(messageObject);
             //channel.basicPublish("", QUEUE_NAME, null, dataObject);
             //System.out.println(" [x] Sent '" + messageObject+"===>" +dataObject + "'");
-            JSONObject obj = new JSONObject();
-            obj.put("Transaction","Test value");
+            //JSONObject obj = new JSONObject();
+            //obj.put("Transaction","Test value");
+            User demo = new User();
+            demo.setId(1l);
+            demo.setNama("lorem ipsum");
+            demo.setAlamat("London");
+
+            JSONObject obj = new JSONObject(demo);
             channel.basicPublish("", QUEUE_NAME, null, obj.toString().getBytes());
             System.out.println(" [x] Sent '" + obj.toString() + "'");
         }
